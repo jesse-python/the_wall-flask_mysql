@@ -107,10 +107,24 @@ def create():
 
     return redirect('/')
 
+@app.route('/logout')
+def logout():
+    session.pop("curr_user")
+    flash("You have logged out")
+    return redirect('/')
+
 @app.route('/wall')
 def wallindex():
     query = "SELECT * FROM messages"
     messages = mysql.fetch(query)
     return render_template('wall.html', messages=messages)
+
+@app.route('/messages', methods=['POST'])
+def create_message():
+    print request.form['message']
+    query = "INSERT INTO messages (message, user_id, created_at, updated_at) VALUES ('{}', '{}', NOW(), NOW())".format(request.form['message'], session['curr_user']['id'])
+    mysql.run_mysql_query(query)
+    return redirect('/wall')
+
 
 app.run(debug=True)
