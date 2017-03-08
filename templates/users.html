@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='CSS/style.css')}}">
+  <title>Log In/Register</title>
+</head>
+<body>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul>{% for message in messages %}
+        <li>{{message}}</li>
+      {% endfor %}</ul>
+    {% endif %}
+  {% endwith %}
+
+  <form action="/login" method="post">
+    <fieldset>
+      <legend>Log In</legend>
+      Email: <input type="email" name="email">
+      Password: <input type="password" name="password">
+      <input type="submit" value="Log In">
+    </fieldset>
+  </form>
+
+  <form action="/users" method="post">
+    <fieldset>
+      <legend>Register</legend>
+      First Name: <input type="text" name="f_name">
+      Last Name: <input type="text" name="l_name">
+      Email: <input type="email" name="email">
+      Password: <input type="password" name="password">
+      Confirm Password: <input type="password" name="c_password">
+      <input type="submit" value="Register">
+    </fieldset>
+  </form>
+
+
+</body>
+</html>
