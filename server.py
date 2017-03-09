@@ -1,6 +1,7 @@
 from flask import Flask, flash, redirect, request, render_template, session
 from mysqlconnection import MySQLConnector
 from flask_bcrypt import Bcrypt
+from datetime import datetime
 import re
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
