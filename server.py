@@ -115,9 +115,13 @@ def logout():
 
 @app.route('/wall')
 def wallindex():
-    query = "SELECT * FROM messages"
-    messages = mysql.fetch(query)
-    return render_template('wall.html', messages=messages)
+    messages_query = "SELECT messages.message, users.first_name, users.last_name, messages.created_at, messages.id, messages.user_id FROM users JOIN messages ON users.id = messages.user_id ORDER BY messages.created_at DESC;"
+    messages = mysql.fetch(messages_query)
+
+    comments_query = "SELECT comments.comment, users.first_name, users.last_name, comments.created_at, comments.id, comments.message_id FROM users JOIN comments ON users.id = comments.user_id ORDER BY comments.created_at ASC;"
+    comments = mysql.fetch(comments_query)
+    print comments
+    return render_template('wall.html', messages=messages, comments=comments)
 
 @app.route('/messages', methods=['POST'])
 def create_message():
@@ -125,6 +129,21 @@ def create_message():
     query = "INSERT INTO messages (message, user_id, created_at, updated_at) VALUES ('{}', '{}', NOW(), NOW())".format(request.form['message'], session['curr_user']['id'])
     mysql.run_mysql_query(query)
     return redirect('/wall')
+
+@app.route('/messages/<id>/delete', methods=['POST'])
+def delete_message(id):
+    delete = "DELETE FROM walldb.messages WHERE id = {}".format(id)
+    mysql.run_mysql_query(delete)
+    return redirect('/wall')
+
+@app.route('/comments', methods=['POST'])
+def create_comment():
+    print request.form['comment']
+    print request.form['message_id']
+    query = "INSERT INTO comments (comment, user_id, message_id, created_at, updated_at) VALUES ('{}','{}','{}', NOW(), NOW())".format(request.form['comment'], session['curr_user']['id'], request.form['message_id'])
+    mysql.run_mysql_query(query)
+    return redirect('/wall')
+
 
 
 app.run(debug=True)

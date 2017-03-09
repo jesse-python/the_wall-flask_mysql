@@ -24,7 +24,41 @@
   </div>
 
   <div id="messageboard">
+    {% if messages %}
+      <ul>
+        {% for message in messages %}
+          <li>
+            <p>{{message.first_name}} {{message.last_name}} - {{message.created_at}}</p>
+            <p>{{message.message}}</p>
 
+            {% if comments %}
+              <ul>
+              {% for comment in comments %}
+                {% if comment.message_id == message.id %}
+                  <li>
+                    <p>{{comment.first_name}} {{comment.last_name}} - {{comment.created_at}}</p>
+                    <p>{{comment.comment}}</p>
+                  </li>
+                {% endif %}
+              {% endfor %}
+              </ul>
+            {% endif %}
+
+            {% if message.user_id == session['curr_user']['id'] %}
+              <form action="/messages/{{message.id}}/delete" method="post">
+                <button>Delete</button>
+              </form>
+            {% endif %}
+
+            <form action="/comments" method="post">
+              <input type="hidden" name="message_id" value="{{message['id']}}">
+              <textarea name="comment" id="" cols="30" rows="5"></textarea>
+              <input type="submit" value="Post a comment">
+            </form>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
   </div>
 </div>
 
